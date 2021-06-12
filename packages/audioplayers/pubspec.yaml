@@ -18,9 +18,9 @@ flutter:
         fileName: web/audioplayers_web.dart
 
 dependencies:
-  uuid: ^3.0.1
-  path_provider: ^2.0.1
-  http: ^0.13.1
+  uuid: ^2.2.2
+  path_provider: ^1.6.28
+  http: ^0.12.2
   flutter:
     sdk: flutter
   flutter_web_plugins:
@@ -29,10 +29,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  dart_code_metrics: ^3.0.0-nullsafety.0
-  dartdoc: ^0.42.0
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.10.0"
-
+  sdk: ">=2.7.0 <3.0.0"

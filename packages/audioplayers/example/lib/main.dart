@@ -12,7 +12,8 @@ import 'player_widget.dart';
 
 typedef OnError = void Function(Exception exception);
 
-const kUrl1 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
+const kUrl1 =
+    'https://job-chat-static-content-stg.s3.ap-southeast-1.amazonaws.com/mediaUpload/IUEGmdichWW1ldGXpTa6bQx7.ogg';
 const kUrl2 = 'https://luan.xyz/files/audio/nasa_on_a_mission.mp3';
 const kUrl3 = 'http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1xtra_mf_p';
 
@@ -28,8 +29,8 @@ class ExampleApp extends StatefulWidget {
 class _ExampleAppState extends State<ExampleApp> {
   AudioCache audioCache = AudioCache();
   AudioPlayer advancedPlayer = AudioPlayer();
-  String? localFilePath;
-  String? localAudioCacheURI;
+  String localFilePath;
+  String localAudioCacheURI;
 
   @override
   void initState() {
@@ -40,7 +41,7 @@ class _ExampleAppState extends State<ExampleApp> {
       return;
     }
     if (Platform.isIOS) {
-      audioCache.fixedPlayer?.notificationService.startHeadlessService();
+      audioCache?.fixedPlayer?.notificationService?.startHeadlessService();
       advancedPlayer.notificationService.startHeadlessService();
     }
   }
@@ -92,7 +93,7 @@ class _ExampleAppState extends State<ExampleApp> {
       const Text('File: $kUrl1'),
       _Btn(txt: 'Download File to your Device', onPressed: _loadFile),
       Text('Current local file path: $localFilePath'),
-      if (localFilePath != null) PlayerWidget(url: localFilePath!),
+      if (localFilePath != null) PlayerWidget(url: localFilePath),
       Container(
         constraints: const BoxConstraints.expand(width: 1.0, height: 20.0),
       ),
@@ -100,7 +101,7 @@ class _ExampleAppState extends State<ExampleApp> {
       const Text('File: $kUrl2'),
       _Btn(txt: 'Download File to your Device', onPressed: _loadFileAC),
       Text('Current AC loaded: $localAudioCacheURI'),
-      if (localAudioCacheURI != null) PlayerWidget(url: localAudioCacheURI!),
+      if (localAudioCacheURI != null) PlayerWidget(url: localAudioCacheURI),
     ]);
   }
 
@@ -113,14 +114,15 @@ class _ExampleAppState extends State<ExampleApp> {
     return SingleChildScrollView(
       child: _Tab(
         children: [
+          const Text("Play Local Asset 'audio.ogg':"),
+          _Btn(txt: 'Play', onPressed: () => audioCache.play('file_example_OOG_5MG.ogg')),
           const Text("Play Local Asset 'audio.mp3':"),
           _Btn(txt: 'Play', onPressed: () => audioCache.play('audio.mp3')),
           const Text("Play Local Asset (via byte source) 'audio.mp3':"),
           _Btn(
             txt: 'Play',
             onPressed: () async {
-              final bytes = await (await audioCache.loadAsFile('audio.mp3'))
-                  .readAsBytes();
+              final bytes = await (await audioCache.loadAsFile('audio.mp3')).readAsBytes();
               audioCache.playBytes(bytes);
             },
           ),
@@ -130,8 +132,7 @@ class _ExampleAppState extends State<ExampleApp> {
           _Btn(
             txt: 'Loop',
             onPressed: () async {
-              final bytes = await (await audioCache.loadAsFile('audio.mp3'))
-                  .readAsBytes();
+              final bytes = await (await audioCache.loadAsFile('audio.mp3')).readAsBytes();
               audioCache.playBytes(bytes, loop: true);
             },
           ),
@@ -197,7 +198,7 @@ class _ExampleAppState extends State<ExampleApp> {
               return Text('Error: ${snapshot.error}');
             }
             return Text(
-              'audio2.mp3 duration is: ${Duration(milliseconds: snapshot.data!)}',
+              'audio2.mp3 duration is: ${Duration(milliseconds: snapshot.data)}',
             );
           default:
             return Container();
@@ -212,8 +213,7 @@ class _ExampleAppState extends State<ExampleApp> {
         const Text("Play notification sound: 'messenger.mp3':"),
         _Btn(
           txt: 'Play',
-          onPressed: () =>
-              audioCache.play('messenger.mp3', isNotification: true),
+          onPressed: () => audioCache.play('messenger.mp3', isNotification: true),
         ),
       ],
     );
@@ -261,19 +261,18 @@ class _ExampleAppState extends State<ExampleApp> {
 class Advanced extends StatefulWidget {
   final AudioPlayer advancedPlayer;
 
-  const Advanced({Key? key, required this.advancedPlayer}) : super(key: key);
+  const Advanced({Key key, @required this.advancedPlayer}) : super(key: key);
 
   @override
   _AdvancedState createState() => _AdvancedState();
 }
 
 class _AdvancedState extends State<Advanced> {
-  bool? seekDone;
+  bool seekDone;
 
   @override
   void initState() {
-    widget.advancedPlayer.onSeekComplete
-        .listen((event) => setState(() => seekDone = true));
+    widget.advancedPlayer.onSeekComplete.listen((event) => setState(() => seekDone = true));
     super.initState();
   }
 
@@ -312,18 +311,15 @@ class _AdvancedState extends State<Advanced> {
                 children: [
                   _Btn(
                     txt: 'STOP',
-                    onPressed: () =>
-                        widget.advancedPlayer.setReleaseMode(ReleaseMode.STOP),
+                    onPressed: () => widget.advancedPlayer.setReleaseMode(ReleaseMode.STOP),
                   ),
                   _Btn(
                     txt: 'LOOP',
-                    onPressed: () =>
-                        widget.advancedPlayer.setReleaseMode(ReleaseMode.LOOP),
+                    onPressed: () => widget.advancedPlayer.setReleaseMode(ReleaseMode.LOOP),
                   ),
                   _Btn(
                     txt: 'RELEASE',
-                    onPressed: () => widget.advancedPlayer
-                        .setReleaseMode(ReleaseMode.RELEASE),
+                    onPressed: () => widget.advancedPlayer.setReleaseMode(ReleaseMode.RELEASE),
                   ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -439,7 +435,7 @@ class _AdvancedState extends State<Advanced> {
             ],
           ),
           Text('Audio Position: $audioPosition'),
-          if (seekDone != null) Text(seekDone! ? 'Seek Done' : 'Seeking...'),
+          if (seekDone != null) Text(seekDone ? 'Seek Done' : 'Seeking...'),
         ],
       ),
     );
@@ -449,7 +445,7 @@ class _AdvancedState extends State<Advanced> {
 class _Tab extends StatelessWidget {
   final List<Widget> children;
 
-  const _Tab({Key? key, required this.children}) : super(key: key);
+  const _Tab({Key key, @required this.children}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -478,8 +474,7 @@ class _Btn extends StatelessWidget {
   final String txt;
   final VoidCallback onPressed;
 
-  const _Btn({Key? key, required this.txt, required this.onPressed})
-      : super(key: key);
+  const _Btn({Key key, @required this.txt, @required this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

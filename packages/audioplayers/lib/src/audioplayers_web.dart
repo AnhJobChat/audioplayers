@@ -7,13 +7,13 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'api/release_mode.dart';
 
 class WrappedPlayer {
-  double? pausedAt;
+  double pausedAt;
   double currentVolume = 1.0;
   ReleaseMode currentReleaseMode = ReleaseMode.RELEASE;
-  String? currentUrl;
+  String currentUrl;
   bool isPlaying = false;
 
-  AudioElement? player;
+  AudioElement player;
 
   void setUrl(String url) {
     currentUrl = url;
@@ -68,7 +68,7 @@ class WrappedPlayer {
   }
 
   void pause() {
-    pausedAt = player?.currentTime as double?;
+    pausedAt = player?.currentTime as double;
     _cancel();
   }
 
@@ -94,7 +94,6 @@ class AudioplayersPlugin {
     final channel = MethodChannel(
       'xyz.luan/audioplayers',
       const StandardMethodCodec(),
-      registrar,
     );
 
     final instance = AudioplayersPlugin();
@@ -137,8 +136,8 @@ class AudioplayersPlugin {
 
           // TODO(luan) think about isLocal (is it needed or not)
 
-          final volume = args['volume'] as double? ?? 1.0;
-          final position = args['position'] as double? ?? 0;
+          final volume = args['volume'] as double ?? 1.0;
+          final position = args['position'] as double ?? 0;
           // web does not care for the `stayAwake` argument
 
           final player = await setUrl(playerId, url);
@@ -164,7 +163,7 @@ class AudioplayersPlugin {
         }
       case 'setVolume':
         {
-          final volume = args['volume'] as double? ?? 1.0;
+          final volume = args['volume'] as double ?? 1.0;
           getOrCreatePlayer(playerId).setVolume(volume);
           return 1;
         }
@@ -184,8 +183,7 @@ class AudioplayersPlugin {
       default:
         throw PlatformException(
           code: 'Unimplemented',
-          details:
-              "The audioplayers plugin for web doesn't implement the method '$method'",
+          details: "The audioplayers plugin for web doesn't implement the method '$method'",
         );
     }
   }

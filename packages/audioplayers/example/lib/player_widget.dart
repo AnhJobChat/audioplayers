@@ -10,8 +10,8 @@ class PlayerWidget extends StatefulWidget {
   final PlayerMode mode;
 
   const PlayerWidget({
-    Key? key,
-    required this.url,
+    Key key,
+    @required this.url,
     this.mode = PlayerMode.MEDIA_PLAYER,
   }) : super(key: key);
 
@@ -25,27 +25,26 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   String url;
   PlayerMode mode;
 
-  late AudioPlayer _audioPlayer;
-  PlayerState? _audioPlayerState;
-  Duration? _duration;
-  Duration? _position;
+  AudioPlayer _audioPlayer;
+  PlayerState _audioPlayerState;
+  Duration _duration;
+  Duration _position;
 
   PlayerState _playerState = PlayerState.STOPPED;
   PlayingRoute _playingRouteState = PlayingRoute.SPEAKERS;
-  StreamSubscription? _durationSubscription;
-  StreamSubscription? _positionSubscription;
-  StreamSubscription? _playerCompleteSubscription;
-  StreamSubscription? _playerErrorSubscription;
-  StreamSubscription? _playerStateSubscription;
-  StreamSubscription<PlayerControlCommand>? _playerControlCommandSubscription;
+  StreamSubscription _durationSubscription;
+  StreamSubscription _positionSubscription;
+  StreamSubscription _playerCompleteSubscription;
+  StreamSubscription _playerErrorSubscription;
+  StreamSubscription _playerStateSubscription;
+  StreamSubscription<PlayerControlCommand> _playerControlCommandSubscription;
 
   bool get _isPlaying => _playerState == PlayerState.PLAYING;
   bool get _isPaused => _playerState == PlayerState.PAUSED;
-  String get _durationText => _duration?.toString().split('.').first ?? '';
-  String get _positionText => _position?.toString().split('.').first ?? '';
+  String get _durationText => _duration?.toString()?.split('.')?.first ?? '';
+  String get _positionText => _position?.toString()?.split('.')?.first ?? '';
 
-  bool get _isPlayingThroughEarpiece =>
-      _playingRouteState == PlayingRoute.EARPIECE;
+  bool get _isPlayingThroughEarpiece => _playingRouteState == PlayingRoute.EARPIECE;
 
   _PlayerWidgetState(this.url, this.mode);
 
@@ -99,9 +98,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             IconButton(
               onPressed: _earpieceOrSpeakersToggle,
               iconSize: 64.0,
-              icon: _isPlayingThroughEarpiece
-                  ? const Icon(Icons.volume_up)
-                  : const Icon(Icons.hearing),
+              icon: _isPlayingThroughEarpiece ? const Icon(Icons.volume_up) : const Icon(Icons.hearing),
               color: Colors.cyan,
             ),
           ],
@@ -115,16 +112,14 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                 children: [
                   Slider(
                     onChanged: (v) {
-                      final Position = v * _duration!.inMilliseconds;
-                      _audioPlayer
-                          .seek(Duration(milliseconds: Position.round()));
+                      final Position = v * _duration.inMilliseconds;
+                      _audioPlayer.seek(Duration(milliseconds: Position.round()));
                     },
                     value: (_position != null &&
                             _duration != null &&
-                            _position!.inMilliseconds > 0 &&
-                            _position!.inMilliseconds <
-                                _duration!.inMilliseconds)
-                        ? _position!.inMilliseconds / _duration!.inMilliseconds
+                            _position.inMilliseconds > 0 &&
+                            _position.inMilliseconds < _duration.inMilliseconds)
+                        ? _position.inMilliseconds / _duration.inMilliseconds
                         : 0.0,
                   ),
                 ],
@@ -170,13 +165,11 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       }
     });
 
-    _positionSubscription =
-        _audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
-              _position = p;
-            }));
+    _positionSubscription = _audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
+          _position = p;
+        }));
 
-    _playerCompleteSubscription =
-        _audioPlayer.onPlayerCompletion.listen((event) {
+    _playerCompleteSubscription = _audioPlayer.onPlayerCompletion.listen((event) {
       _onComplete();
       setState(() {
         _position = _duration;
@@ -192,8 +185,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       });
     });
 
-    _playerControlCommandSubscription =
-        _audioPlayer.notificationService.onPlayerCommand.listen((command) {
+    _playerControlCommandSubscription = _audioPlayer.notificationService.onPlayerCommand.listen((command) {
       print('command: $command');
     });
 
@@ -217,8 +209,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   Future<int> _play() async {
     final playPosition = (_position != null &&
             _duration != null &&
-            _position!.inMilliseconds > 0 &&
-            _position!.inMilliseconds < _duration!.inMilliseconds)
+            _position.inMilliseconds > 0 &&
+            _position.inMilliseconds < _duration.inMilliseconds)
         ? _position
         : null;
     final result = await _audioPlayer.play(url, position: playPosition);

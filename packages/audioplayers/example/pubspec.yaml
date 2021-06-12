@@ -6,15 +6,10 @@ dependencies:
     sdk: flutter
   audioplayers:
     path: ../
-  http: ^0.13.1
-  path_provider: ^2.0.1
-  path_provider_macos: ^2.0.0
-  provider: 5.0.0
-
-dev_dependencies:
-  # flutter_driver:
-  #  sdk: flutter
-  dart_code_metrics: ^3.0.0-nullsafety.0
+  http: ^0.12.2
+  path_provider: ^1.6.28
+  path_provider_macos: ^0.0.4+8
+  provider: 4.3.3
 
 flutter:
   uses-material-design: true
@@ -23,6 +18,7 @@ flutter:
     - assets/audio.mp3
     - assets/audio2.mp3
     - assets/messenger.mp3
+    - assets/file_example_OOG_5MG.ogg
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
